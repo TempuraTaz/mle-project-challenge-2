@@ -5,10 +5,15 @@
 ```
 mle-project-challenge-2/
 ├── src/                        # API source code
-│   ├── api.py                  # FastAPI application with endpoints
+│   ├── api.py                  # FastAPI application entry point
+│   ├── routes/                 # API endpoints organized by domain
+│   │   ├── health.py           # Health check endpoints
+│   │   └── predictions.py      # Prediction endpoints
 │   ├── services.py             # Business logic (predictions, data joining)
 │   ├── model_loader.py         # Model loading and initialization
 │   ├── schemas.py              # Pydantic request/response models
+│   ├── middleware.py           # Request logging middleware
+│   ├── exception_handlers.py   # Custom exception handlers
 │   └── config.py               # Configuration (model version, paths)
 │
 ├── scripts/                    # Training and analysis scripts
@@ -17,7 +22,8 @@ mle-project-challenge-2/
 │   └── analyze_feature_importance_v5.py  # Feature importance analysis
 │
 ├── tests/                      # Test suite
-│   └── test_housing_endpoints.py  # Comprehensive API tests (25+ tests)
+│   ├── test_api.py             # Essential API tests (10 focused tests)
+│   └── test_predictions.py     # Validation script with real data
 │
 ├── data/                       # Training and demographic data
 │   ├── kc_house_data.csv       # House sales training data
