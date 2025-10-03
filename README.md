@@ -1,5 +1,62 @@
 ![phData Logo](phData.png "phData Logo")
 
+## Repository Structure
+
+```
+mle-project-challenge-2/
+├── src/                        # API source code
+│   ├── api.py                  # FastAPI application with endpoints
+│   ├── services.py             # Business logic (predictions, data joining)
+│   ├── model_loader.py         # Model loading and initialization
+│   ├── schemas.py              # Pydantic request/response models
+│   └── config.py               # Configuration (model version, paths)
+│
+├── scripts/                    # Training and analysis scripts
+│   ├── create_model_v5.py      # Train production model (XGBoost)
+│   ├── evaluate_model_v5.py    # Evaluate model performance
+│   └── analyze_feature_importance_v5.py  # Feature importance analysis
+│
+├── tests/                      # Test suite
+│   └── test_housing_endpoints.py  # Comprehensive API tests (25+ tests)
+│
+├── data/                       # Training and demographic data
+│   ├── kc_house_data.csv       # House sales training data
+│   ├── zipcode_demographics.csv # Demographics (auto-joined by API)
+│   └── future_unseen_examples.csv  # Test examples
+│
+├── model/                      # Model artifacts
+│   ├── model_v5.pkl            # Production XGBoost model
+│   ├── model_features_v5.json  # Required features (43 total)
+│   └── defaults_v5.json        # Default values for /predict-minimal
+│
+├── docs/                       # Documentation
+│   └── MODEL_EXPERIMENTS.md    # Model iterations and evaluation
+│
+├── Dockerfile                  # Container image definition
+├── docker-compose.yml          # Service orchestration
+├── requirements.txt            # Python dependencies
+├── conda_environment.yml       # Original conda environment
+├── SETUP.md                    # Setup and usage instructions
+└── README.md                   # This file
+```
+
+### Quick Start
+
+See **[SETUP.md](SETUP.md)** for detailed setup and usage instructions.
+
+### Key Endpoints
+
+- **`GET /health`** - Service health check
+- **`POST /predict`** - Full prediction (17 house fields required)
+- **`POST /predict-minimal`** - Minimal prediction (zipcode only required)
+
+### Production Model
+
+**XGBoost V5** - 88.1% R² test accuracy, 12.5% MAPE
+See `docs/MODEL_EXPERIMENTS.md` for full experimentation journey.
+
+---
+
 # phData Machine Learning Engineer Candidate Project
 
 phData wants the interview process to – as best as possible – reflect
@@ -179,3 +236,5 @@ If you have any suggestions for this project or our interview process, please
 **give us feedback.**
 Our goal is to make the interview process a positive experience for candidates
 and we are always interested in improving.
+
+---

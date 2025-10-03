@@ -12,11 +12,11 @@ Starting from a baseline KNN model, we conducted 5 iterations of experimentation
 
 | Version | Algorithm | Features | Test R² | Test RMSE | Test MAE | MAPE | Train-Test Gap | Rating |
 |---------|-----------|----------|---------|-----------|----------|------|----------------|--------|
-| **V1** | KNN | 8 (33 total) | 0.728 | $201,679 | $102,065 | 17.9% | 0.113 | Good |
-| **V2** | Random Forest | 8 (33 total) | 0.787 | $178,294 | $91,040 | 16.5% | 0.072 | Good |
-| **V3** | Random Forest | 18 (43 total) | 0.866 | $141,578 | $73,029 | 13.4% | 0.051 | **Excellent** |
-| **V4** | Random Forest | 12 only | 0.857 | $146,223 | $77,508 | 14.1% | 0.054 | Excellent |
-| **V5** | XGBoost (tuned) | 18 (43 total) | **0.881** | **$133,505** | **$67,444** | **12.5%** | 0.074 | **Best** ⭐ |
+| **V1** | KNN | 8 house + 25 demo (33 total) | 0.728 | $201,679 | $102,065 | 17.9% | 0.113 | Good |
+| **V2** | Random Forest | 8 house + 25 demo (33 total) | 0.787 | $178,294 | $91,040 | 16.5% | 0.072 | Good |
+| **V3** | Random Forest | 18 house + 25 demo (43 total) | 0.866 | $141,578 | $73,029 | 13.4% | 0.051 | **Excellent** |
+| **V4** | Random Forest | **Top 12 (7 house + 5 demo)** | 0.857 | $146,223 | $77,508 | 14.1% | 0.054 | Excellent |
+| **V5** | XGBoost (tuned) | 18 house + 25 demo (43 total) | **0.881** | **$133,505** | **$67,444** | **12.5%** | 0.074 | **Best** ⭐ |
 
 ### Key Metrics Explained
 
@@ -38,7 +38,7 @@ Starting from a baseline KNN model, we conducted 5 iterations of experimentation
 - Algorithm: K-Nearest Neighbors
 - Features: 8 house features + demographics (33 total)
   - `bedrooms`, `bathrooms`, `sqft_living`, `sqft_lot`, `floors`, `sqft_above`, `sqft_basement`, `zipcode`
-  - Plus 26 demographic features from zipcode merge
+  - Plus 25 demographic features from zipcode merge
 - Preprocessing: RobustScaler
 
 **Results:**
@@ -129,18 +129,22 @@ RandomForestRegressor(
 - Features: 43 → **12 features** (top importance from V3 analysis)
 - Algorithm: Same Random Forest
 
-**Top 12 Features (by importance):**
+**Top 12 Features Selected (by importance):**
+
+**House Features (7):**
 1. `sqft_living` (15.3%)
 2. `grade` (13.1%)
 3. `sqft_above` (8.5%)
 4. `sqft_living15` (7.1%)
 5. `bathrooms` (6.2%)
-6. `hous_val_amt` (5.9%)
-7. `medn_incm_per_prsn_amt` (4.8%)
-8. `per_bchlr` (4.5%)
-9. `per_prfsnl` (3.6%)
-10. `lat` (3.5%)
-11. `view` (3.4%)
+6. `lat` (3.5%)
+7. `view` (3.4%)
+
+**Demographic Features (5):**
+8. `hous_val_amt` (5.9%)
+9. `medn_incm_per_prsn_amt` (4.8%)
+10. `per_bchlr` (4.5%)
+11. `per_prfsnl` (3.6%)
 12. `per_hsd` (2.7%)
 
 **Results:**
@@ -150,10 +154,10 @@ RandomForestRegressor(
 - Performance retention: **99%** (0.857 vs 0.866)
 
 **Insights:**
-- **80/20 rule validated**: 12 features retain 99% of performance
-- 72% fewer features = 5x faster inference
-- Minimal performance loss for huge complexity reduction
-- Ideal for production: simpler, faster, easier to maintain
+- **80/20 rule validated**: 12 features retain 99% of performance (0.857 vs 0.866)
+- 72% fewer features (43 → 12) with minimal performance loss
+- Simpler model: easier to maintain, explain, and deploy
+- Ideal for production when simplicity is valued over maximum accuracy
 
 **Script:** `scripts/create_model_v4.py`, `scripts/evaluate_model_v4.py`
 
@@ -228,33 +232,42 @@ XGBRegressor(
 
 ## Feature Importance Analysis (V5)
 
-Analysis of which features drive predictions in the best model (V5).
+Analysis of which features drive predictions in the best model (V5 - XGBoost).
 
 ### Top 10 Features
 
 | Rank | Feature | Importance | Category |
 |------|---------|-----------|----------|
-| 1 | `sqft_living` | 15.3% | House |
-| 2 | `grade` | 13.1% | House |
-| 3 | `sqft_above` | 8.5% | House |
-| 4 | `sqft_living15` | 7.1% | House |
-| 5 | `bathrooms` | 6.2% | House |
-| 6 | `hous_val_amt` | 5.9% | Demographics |
-| 7 | `medn_incm_per_prsn_amt` | 4.8% | Demographics |
-| 8 | `per_bchlr` | 4.5% | Demographics |
-| 9 | `per_prfsnl` | 3.6% | Demographics |
-| 10 | `lat` | 3.5% | House (Location) |
+| 1 | `grade` | 17.9% | House |
+| 2 | `hous_val_amt` | 10.2% | Demographics |
+| 3 | `per_prfsnl` | 9.6% | Demographics |
+| 4 | `sqft_living` | 9.4% | House |
+| 5 | `per_bchlr` | 9.0% | Demographics |
+| 6 | `waterfront` | 7.3% | House |
+| 7 | `medn_incm_per_prsn_amt` | 6.6% | Demographics |
+| 8 | `view` | 4.0% | House |
+| 9 | `per_hsd` | 3.8% | Demographics |
+| 10 | `sqft_above` | 2.1% | House |
 
 ### Key Insights
 
-- **Living space is #1 driver** (15.3%) - size matters most
-- **Build quality is #2** (13.1%) - `grade` is critical
-- **Bedrooms have <1% importance** - counterintuitive! Bedroom count is redundant with `sqft_living`
-- **Demographics contribute 33%** - neighborhood wealth predicts house value
-- **Location adds 5.4%** (`lat` + `long`) - micro-location effects beyond zipcode
-- **12 features explain 80%** of predictions (validated in V4)
+- **Build quality is #1 driver** (17.9%) - `grade` dominates in XGBoost
+- **Demographics are critical** (48.8% of total importance) - neighborhood wealth, education, and profession strongly predict price
+- **Living space is #4** (9.4%) - important but less dominant than in Random Forest
+- **Waterfront property** (7.3%) - high-value feature, 6th most important
+- **Top 10 features explain 79.8%** - concentrated prediction power
+- **Top 12 features explain 83.6%** of predictions (80/20 rule validated)
+- **Location coordinates** (`lat` + `long`) contribute 2.6% - micro-location effects
+- **29 features have <1% importance** - significant opportunity for model simplification
 
-**Script:** `scripts/analyze_feature_importance.py`
+### XGBoost vs Random Forest Differences
+
+XGBoost values features differently than Random Forest:
+- **Demographics are emphasized**: 48.8% of total importance in XGBoost - neighborhood effects strongly captured
+- **grade becomes #1**: Build quality interactions captured more effectively (17.9% importance)
+- **waterfront enters top 10**: Binary features weighted more appropriately (7.3% importance)
+
+**Script:** `scripts/analyze_feature_importance_v5.py`
 
 ---
 
@@ -304,15 +317,15 @@ Analysis of which features drive predictions in the best model (V5).
 **Use V4 (Random Forest, 12 features):**
 - Test R²: 85.7% (only 2.4% worse than V5)
 - 72% fewer features (12 vs 43)
-- 5x faster inference
+- Simpler model with faster inference
 - Easier to explain to stakeholders
 - Trade-off: Slightly lower accuracy
 
 ### For API Deployment
-**Current production model:** V1 (baseline)
-- Already deployed in `model/model.pkl`
-- API supports both `/predict` (8 fields) and `/predict-minimal` (zipcode only)
-- Recommendation: **Upgrade to V5** for better user experience
+**Current production model:** V5 (XGBoost)
+- Deployed as `model/model_v5.pkl`
+- API supports both `/predict` (17 fields required) and `/predict-minimal` (zipcode only)
+- 88.1% R² test accuracy with 12.5% MAPE
 
 ---
 
@@ -344,8 +357,11 @@ python scripts/evaluate_model_v5.py
 
 ### Analyze Feature Importance
 ```bash
-# For any model with Random Forest or XGBoost
-python scripts/analyze_feature_importance.py --model model/model_v5.pkl --features model/model_features_v5.json --top 20
+# For V3 (Random Forest)
+python scripts/analyze_feature_importance_v3.py --model model/model_v3.pkl --features model/model_features_v3.json --top 20
+
+# For V5 (XGBoost)
+python scripts/analyze_feature_importance_v5.py --model model/model_v5.pkl --features model/model_features_v5.json --top 20
 ```
 
 ---
@@ -393,8 +409,8 @@ The journey demonstrates:
 - ✅ Production trade-offs (V4 vs V5)
 - ✅ Hyperparameter tuning skills
 
-**Best model:** V5 (XGBoost, 88.1% R²) for maximum accuracy
-**Production model:** V4 (Random Forest, 85.7% R²) for simplicity
+**Best model:** V5 (XGBoost, 88.1% R²) - currently deployed in production
+**Alternative option:** V4 (Random Forest, 85.7% R²) - viable for simplicity-focused deployments
 
 Both models are production-ready and demonstrate senior-level ML engineering capabilities.
 
