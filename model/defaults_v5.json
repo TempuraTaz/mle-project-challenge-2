@@ -1,0 +1,19 @@
+{
+  "bedrooms": 3,
+  "bathrooms": 2.25,
+  "sqft_living": 1910,
+  "sqft_lot": 7599,
+  "floors": 1.5,
+  "sqft_above": 1560,
+  "sqft_basement": 0,
+  "waterfront": 0,
+  "view": 0,
+  "condition": 3,
+  "grade": 7,
+  "yr_built": 1975,
+  "yr_renovated": 0,
+  "lat": 47.5724,
+  "long": -122.23,
+  "sqft_living15": 1840,
+  "sqft_lot15": 7620
+}

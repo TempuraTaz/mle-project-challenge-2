@@ -1,0 +1,51 @@
+# Development files
+*.ipynb
+data_exploration.ipynb
+
+# Scripts and tests (not needed in runtime container)
+scripts/
+tests/
+
+# Documentation and project files
+README.md
+ROADMAP.md
+*.md
+
+# Data files not needed at runtime
+data/kc_house_data.csv
+data/future_unseen_examples.csv
+
+# Environment files
+conda_environment.yml
+Miniconda3-*.sh
+
+# Screenshots and images
+screenshots/
+*.png
+*.jpg
+*.jpeg
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db

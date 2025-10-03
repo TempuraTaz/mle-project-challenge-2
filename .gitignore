@@ -1,0 +1,31 @@
+# Python
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing
+.pytest_cache/
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large installers (DO NOT COMMIT)
+Miniconda3-*.sh
+*.exe
+*.dmg
+
+# Environment
+.env
+*.env
